@@ -1,0 +1,6 @@
+services:
+  nginx:
+    build: ../srcs/nginx
+    # ports: "443:80" for TLS
+    ports:
+      - "8888:80"
