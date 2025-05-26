@@ -2,15 +2,16 @@ FROM debian:bullseye-slim
 
 WORKDIR /app
 
+RUN pwd
+
 COPY ./conf/requirements.txt ./
 
-RUN apt-get update &&\
+RUN apt-get update && \
 	cat ./requirements.txt | xargs apt-get install -y
 
-COPY ./conf/nginx.conf .
+COPY ./tools/ ./
 
-COPY ./tools/index.html .
+EXPOSE 8080
 
-EXPOSE 443
+CMD ["nginx", "-c", "/app/nginx.conf", "-g", "daemon off;"]
 
-CMD ["nginx", "-g", "daemon off", "-c", "/app/nginx.conf;"]
