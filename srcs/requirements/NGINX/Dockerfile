@@ -2,8 +2,6 @@ FROM debian:bullseye-slim
 
 WORKDIR /app
 
-RUN pwd
-
 COPY ./conf/requirements.txt ./
 
 RUN apt-get update && \
