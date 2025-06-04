@@ -1,5 +1,5 @@
 NAME = make_inception
-SRCS = ./conf/docker-compose.yml
+SRCS = ./srcs/docker-compose.yml
 
 up:
 	docker compose -f $(SRCS) -p $(NAME) up -d
@@ -7,4 +7,4 @@ up:
 down:
 	docker compose -f $(SRCS) -p $(NAME) down
 
-.PHONY: up
+.PHONY: up down

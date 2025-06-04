@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+
+    restart: always
+
+    ports:
+      - "80:80" #change to 443 when implementing SSL
