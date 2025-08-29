@@ -1,36 +1,60 @@
 #!/bin/sh
 
-if [ -f ./wp-load.php ]; then
-    echo "Wordpress has already been installed"
+# Wait for MariaDB to be ready
+echo "Waiting for MariaDB to be ready..."
+while ! mysqladmin ping -h"$MYSQL_HOSTNAME" --silent; do
+    sleep 1
+done
+echo "MariaDB is ready."
+
+# Read secrets if they exist
+if [ -f "$MYSQL_PASSWORD" ]; then
+    DB_PASSWORD=$(cat "$MYSQL_PASSWORD")
 else
-    wp core download --allow-root
+    DB_PASSWORD="$MYSQL_PASSWORD"
 fi
 
-if [ ! -f ./wp-config.php ]; then
+if [ -f "$WP_ADMIN_PASSWORD" ]; then
+    ADMIN_PASSWORD=$(cat "$WP_ADMIN_PASSWORD")
+else
+    ADMIN_PASSWORD="$WP_ADMIN_PASSWORD"
+fi
+
+if [ -f "$WP_TEST_PASSWORD" ]; then
+    TEST_PASSWORD=$(cat "$WP_TEST_PASSWORD")
+else
+    TEST_PASSWORD="$WP_TEST_PASSWORD"
+fi
+
+if [ -f /var/www/html/wp-config.php ]; then
+    echo "WordPress is already installed."
+else
+    echo "Installing WordPress..."
+
+    wp core download --allow-root
+
     wp config create \
         --dbname="$MYSQL_DATABASE" \
         --dbuser="$MYSQL_USER" \
         --dbpass="$MYSQL_PASSWORD" \
         --dbhost="$MYSQL_HOSTNAME" \
         --allow-root
-else
-    echo "WordPress configuration already exists"
-fi
 
-if ! wp core is-installed --allow-root 2>/dev/null; then
     wp core install \
         --url="$WP_SITE_URL" \
         --admin_user="$WP_ADMIN_USER" \
         --admin_password="$WP_ADMIN_PASSWORD" \
+        --skip-email \
         --allow-root
-else
-    echo "WordPress core already installed"
-fi
+        # --title="$WP_TITLE" \
 
-if ! wp user exists "$WP_TEST_USER" --allow-root 2>/dev/null; then
     wp user create "$WP_TEST_USER" "$WP_TEST_EMAIL" \
+        --role=author \
         --user_pass="$WP_TEST_PASSWORD" \
         --allow-root
-else
-    echo "User $WP_TEST_USER already exists"
+
+    echo "WordPress installation complete."
 fi
+
+echo "Starting PHP-FPM..."
+exec "$@"
