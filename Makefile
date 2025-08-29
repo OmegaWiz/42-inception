@@ -10,6 +10,15 @@ up-w: data
 down:
 	docker compose -f $(SRCS) -p $(NAME) down
 
+fclean: SHELL:=/bin/bash
+fclean:
+	bash -c "docker stop $(docker ps -qa)"
+	bash -c "docker rm $(docker ps -qa)"
+	bash -c "docker rmi -f $(docker images -qa)"
+	bash -c "docker volume rm $(docker volume ls -q)"
+	bash -c "docker network rm $(docker network ls -q)"
+	rm -rf /home/kkaiyawo/data/*
+
 prune:
 	docker system prune -f -a --volumes
 	sudo rm -rf /home/kkaiyawo/data/*

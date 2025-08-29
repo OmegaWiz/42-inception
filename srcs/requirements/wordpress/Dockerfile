@@ -29,7 +29,7 @@ RUN  chmod 755 /usr/local/bin/wp-install.sh
 EXPOSE 9000
 
 # config php-fpm
-COPY ./conf/www.conf /etc/php/8.4/fpm/pool.d/www.conf
+COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
 RUN touch /var/log/fpm-php.www.log && chmod 666 /var/log/fpm-php.www.log \
  && ln -sf /dev/stderr /var/log/fpm-php.www.log \
@@ -38,4 +38,4 @@ RUN touch /var/log/fpm-php.www.log && chmod 666 /var/log/fpm-php.www.log \
 
 ENTRYPOINT ["/usr/local/bin/wp-install.sh"]
 
-CMD ["/usr/sbin/php-fpm7.4", "-F"]
+CMD ["/usr/sbin/php-fpm8.2", "-F"]
