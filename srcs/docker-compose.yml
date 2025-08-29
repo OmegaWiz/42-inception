@@ -6,7 +6,12 @@ services:
     restart: always
 
     ports:
-      - "8080:8080" #change to 443 when implementing SSL
+      - "443:443" #change to 443 when implementing SSL
+
+    develop:
+      watch:
+        - action: rebuild
+          path: ./requirements/nginx/conf/nginx.conf
 
 
 #secrets:
