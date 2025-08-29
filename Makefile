@@ -7,4 +7,7 @@ up:
 down:
 	docker compose -f $(SRCS) -p $(NAME) down
 
+prune:
+	docker system prune -fa --volumes
+
 .PHONY: up down

@@ -13,7 +13,7 @@ RUN rm -f /var/log/nginx/access.log /var/log/nginx/error.log && \
 	ln -s /dev/stderr /var/log/nginx/error.log
 
 # Change to 443 when SSL is implemented
-EXPOSE 80
+EXPOSE 8080
 
 # Placeholder when volumes are not implemented
 COPY ./tools/index.php /var/www/html/index.php
