@@ -2,6 +2,8 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
+    depends_on:
+      - wordpress
     restart: always
     networks:
       - inception-network
