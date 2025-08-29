@@ -17,7 +17,6 @@ else
     echo "WordPress configuration already exists"
 fi
 
-      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
 if ! wp core is-installed --allow-root 2>/dev/null; then
     wp core install \
         --url="$WP_SITE_URL" \
