@@ -2,18 +2,92 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
-
     restart: always
-
+    networks:
+      - inception-network
     ports:
       - "443:443" #change to 443 when implementing SSL
-
     develop:
       watch:
         - action: rebuild
           path: ./requirements/nginx/conf/nginx.conf
 
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    restart: always
+    volumes:
+      - mariadb_data:/var/lib/mysql:delegated
+    networks:
+      - inception-network
+    expose:
+      - "3306"
+    secrets:
+      - mysql_password
+      - mysql_root_password
+    environment:
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
+    env_file: .env
+    develop:
+      watch:
+        - action: rebuild
+          path: ./requirements/mariadb/tools/start.sh
 
-#secrets:
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress/
+    depends_on:
+      - mariadb
+    restart: always
+    volumes:
+      - wordpress_data:/var/www/html:delegated
+    networks:
+      - inception-network
+    ports:
+      - "9000:9000"
+    secrets:
+      - mysql_password
+      - wp_admin_password
+      - wp_test_password
+    environment:
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+      WP_ADMIN_PASSWORD: /run/secrets/wp_admin_password
+      WP_TEST_PASSWORD: /run/secrets/wp_test_password
+    env_file: .env
+    develop:
+      watch:
+        - action: rebuild
+          path: ./requirements/wordpress/tools/wp-install.sh
+        - action: rebuild
+          path: ./requirements/wordpress/conf/www.conf
 
-#volumes:
+
+secrets:
+  mysql_password:
+    file: ../secrets/MYSQL_PASSWORD.txt
+  mysql_root_password:
+    file: ../secrets/MYSQL_ROOT_PASSWORD.txt
+  wp_admin_password:
+    file: ../secrets/WP_ADMIN_PASSWORD.txt
+  wp_test_password:
+    file: ../secrets/WP_TEST_PASSWORD.txt
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/kkaiyawo/data/mariadb_data
+      o: bind
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/kkaiyawo/data/wordpress_data
+      o: bind
+
+
+networks:
+  inception-network:
+    driver: bridge

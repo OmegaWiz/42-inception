@@ -1,4 +1,4 @@
-FROM  debian:oldstable
+FROM  debian:oldstable-slim
 
 RUN   apt update
 RUN   apt install -y \
@@ -24,6 +24,6 @@ RUN   rm -f /var/log/nginx/access.log /var/log/nginx/error.log && \
 EXPOSE 443
 
 # Placeholder when volumes are not implemented
-COPY  ./tools/index.php /var/www/html/index.php
+#COPY  ./tools/index.php /var/www/html/index.php
 
 CMD   ["nginx", "-g", "daemon off;"]
