@@ -1,35 +1,56 @@
-NAME = make_inception
-SRCS = ./srcs/docker-compose.yml
-
-secrets:
-	mkdir -p secrets
-	cp ./srcs/secrets-example/* ./secrets/
-	cp ./srcs/.env.example ./srcs/.env
-
-up: data
-	docker compose -f $(SRCS) -p $(NAME) up -d --build
-
-up-w: data
-	docker compose -f $(SRCS) -p $(NAME) up -w --build
-
-down:
-	docker compose -f $(SRCS) -p $(NAME) down
-
-fclean: SHELL:=/bin/bash
-fclean:
-	bash -c "docker stop $(docker ps -qa)"
-	bash -c "docker rm $(docker ps -qa)"
-	bash -c "docker rmi -f $(docker images -qa)"
-	bash -c "docker volume rm $(docker volume ls -q)"
-	bash -c "docker network rm $(docker network ls -q)"
-	rm -rf ${HOME}/data/*
-
-prune:
-	docker system prune -f -a --volumes
-	sudo rm -rf ${HOME}/data/*
+NAME=make_inception
+SRCS=./srcs/docker-compose.yml
+COMP=docker compose -f $(SRCS) -p $(NAME)
 
 data:
 	mkdir -p ${HOME}/data/mariadb_data
 	mkdir -p ${HOME}/data/wordpress_data
 
-.PHONY: up down
+secrets:
+	mkdir -p secrets
+	@set -e; for file in ./srcs/secrets-example/*; do \
+		filename=$$(basename $$file); \
+		if [ ! -f ./secrets/$$filename ]; then \
+			cp $$file ./secrets/$$filename; \
+			echo "Created ./secrets/$$filename"; \
+		fi; \
+	done
+
+envar:
+	@if [ ! -f ./srcs/.env ]; then \
+		cp ./srcs/.env.example ./srcs/.env; \
+		echo "Created ./srcs/.env"; \
+	fi
+
+utils: data secrets envar
+
+up: utils
+	$(COMP) up -d --build
+
+watch: utils
+	$(COMP) up -w --build
+
+down:
+	$(COMP) down
+
+build: utils
+	$(COMP) build --no-cache
+
+re: clean build up
+
+ps:
+	$(COMP) ps
+
+logs:
+	$(COMP) logs -f
+
+clean:
+	$(COMP) down --volumes --remove-orphans
+
+fclean: clean
+	rm -rf ${HOME}/data/*
+
+prune: fclean
+	docker system prune -f -a --volumes
+
+.PHONY: up down build re ps logs clean fclean prune utils data secrets envar watch
