@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # Wait for MariaDB to be ready
-echo "Waiting for MariaDB to be ready..."
-while ! mysqladmin ping -h"$MYSQL_HOSTNAME" --silent; do
-    sleep 1
-done
-echo "MariaDB is ready."
+# echo "Waiting for MariaDB to be ready..."
+# while ! mysqladmin ping -h"$MYSQL_HOSTNAME" --silent; do
+#     sleep 1
+# done
+# echo "MariaDB is ready."
 
 if [ -f /run/secrets/mysql_password ]; then
     MYSQL_PASSWORD=$(cat $MYSQL_PASSWORD_FILE)
