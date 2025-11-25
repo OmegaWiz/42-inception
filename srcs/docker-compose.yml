@@ -5,6 +5,8 @@ services:
     depends_on:
       - wordpress
     restart: always
+    volumes:
+      - wordpress_data:/var/www/html:delegated
     networks:
       - inception-network
     ports:
@@ -28,8 +30,8 @@ services:
       - mysql_password
       - mysql_root_password
     environment:
-      MYSQL_PASSWORD: /run/secrets/mysql_password
-      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
     env_file: .env
     develop:
       watch:
@@ -54,10 +56,10 @@ services:
       - wp_admin_password
       - wp_test_password
     environment:
-      MYSQL_PASSWORD: /run/secrets/mysql_password
-      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
-      WP_ADMIN_PASSWORD: /run/secrets/wp_admin_password
-      WP_TEST_PASSWORD: /run/secrets/wp_test_password
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      WP_ADMIN_PASSWORD_FILE: /run/secrets/wp_admin_password
+      WP_TEST_PASSWORD_FILE: /run/secrets/wp_test_password
     env_file: .env
     develop:
       watch:

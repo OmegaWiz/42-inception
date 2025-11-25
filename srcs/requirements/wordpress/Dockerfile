@@ -24,6 +24,7 @@ WORKDIR /var/www/html
 
 # install wordpress (on runtime)
 COPY ./tools/wp-install.sh /usr/local/bin/wp-install.sh
+#COPY ./conf/wp-config-temp.php .
 RUN  chmod 755 /usr/local/bin/wp-install.sh
 
 EXPOSE 9000

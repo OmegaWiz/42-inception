@@ -11,18 +11,30 @@ if [ -f ./wp-config.php ]
 	then
 		echo "wordpress have already been installed"
 	else
+    rm -rf *
 		wget https://wordpress.org/latest.tar.gz
 		tar -xvf latest.tar.gz
 		mv wordpress/* .
 		rm -rf latest.tar.gz
 		rm -rf wordpress
 
+    #where envsubst
+
+    #envsubst < wp-config-temp.php > wp-config.php
+
 		cp wp-config-sample.php wp-config.php
+    echo $MYSQL_DATABASE
 		sed -i "s/database_name_here/$MYSQL_DATABASE/g" wp-config.php
+    echo $MYSQL_USER
 		sed -i "s/username_here/$MYSQL_USER/g" wp-config.php
-		sed -i "s/password_here/$MYSQL_PASSWORD/g" wp-config.php
+    echo $MYSQL_PASSWORD_FILE
+    sed -i "s/password_here/$(cat $MYSQL_PASSWORD_FILE)/g" wp-config.php
+    echo $MYSQL_HOSTNAME
 		sed -i "s/localhost/$MYSQL_HOSTNAME/g" wp-config.php
+    echo "done?"
 fi
+
+echo "YESSSS"
 
 exec "$@"
 
