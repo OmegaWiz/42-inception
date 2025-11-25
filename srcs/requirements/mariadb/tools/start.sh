@@ -2,11 +2,13 @@
 
 # Read Docker secrets if they exist, otherwise use environment variables
 if [ -f /run/secrets/mysql_root_password ]; then
-    MYSQL_ROOT_PASSWORD=$(cat $MYSQL_ROOT_PASSWORD_FILE)
+    MYSQL_ROOT_PASSWORD=$(cat ${MYSQL_ROOT_PASSWORD_FILE})
 fi
 
+echo "MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD"
+
 if [ -f /run/secrets/mysql_password ]; then
-    MYSQL_PASSWORD=$(cat $MYSQL_PASSWORD_FILE)
+    MYSQL_PASSWORD=$(cat ${MYSQL_PASSWORD_FILE})
 fi
 
 # Ensure required environment variables are set
