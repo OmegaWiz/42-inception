@@ -17,14 +17,14 @@ fclean:
 	bash -c "docker rmi -f $(docker images -qa)"
 	bash -c "docker volume rm $(docker volume ls -q)"
 	bash -c "docker network rm $(docker network ls -q)"
-	rm -rf /home/kkaiyawo/data/*
+	rm -rf ${HOME}/data/*
 
 prune:
 	docker system prune -f -a --volumes
-	sudo rm -rf /home/kkaiyawo/data/*
+	sudo rm -rf ${HOME}/data/*
 
 data:
-	mkdir -p /home/kkaiyawo/data/mariadb_data
-	mkdir -p /home/kkaiyawo/data/wordpress_data
+	mkdir -p ${HOME}/data/mariadb_data
+	mkdir -p ${HOME}/data/wordpress_data
 
 .PHONY: up down
