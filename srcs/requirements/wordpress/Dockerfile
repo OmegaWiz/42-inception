@@ -1,7 +1,8 @@
 FROM debian:oldstable-slim
 
 RUN apt-get update \
- && apt-get install -y wget \
+ && apt-get install -y \
+    wget \
     curl \
     bash \
     vim \
@@ -9,6 +10,7 @@ RUN apt-get update \
     php-mysql \
     php-fpm \
     mariadb-client \
+    sendmail \
  && rm -rf /var/lib/apt/lists/*
 
 # install wp-cli
