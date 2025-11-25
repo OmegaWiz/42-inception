@@ -26,5 +26,6 @@ EXPOSE 443
 # Placeholder when volumes are not implemented
 #COPY  ./tools/index.php /var/www/html/index.php
 RUN   mkdir -p /var/www/html
+WORKDIR /var/www/html
 
 CMD   ["nginx", "-g", "daemon off;"]
