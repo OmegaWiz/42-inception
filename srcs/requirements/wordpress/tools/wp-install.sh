@@ -20,7 +20,18 @@ if [ -f /run/secrets/wp_test_password ]; then
 fi
 
 # Ensure required environment variables are set
-if [ -z "$MYSQL_HOSTNAME" ] || [ -z "$MYSQL_PASSWORD" ] || [ -z "$MYSQL_DATABASE" ] || [ -z "$MYSQL_USER" ]; then
+if  [ -z "$MYSQL_PASSWORD" ] || \
+    [ -z "$WP_ADMIN_PASSWORD" ] || \
+    [ -z "$WP_TEST_PASSWORD" ] || \
+    [ -z "$MYSQL_DATABASE" ] || \
+    [ -z "$MYSQL_USER" ] || \
+    [ -z "$MYSQL_HOSTNAME" ] || \
+    [ -z "$WP_SITE_URL" ] || \
+    [ -z "$WP_ADMIN_USER" ] || \
+    [ -z "$WP_ADMIN_EMAIL" ] || \
+    [ -z "$WP_SITE_TITLE" ] || \
+    [ -z "$WP_TEST_USER" ] || \
+    [ -z "$WP_TEST_EMAIL" ]; then
     echo "Error: Required environment variables are not set"
     echo "MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD, MYSQL_DATABASE, and MYSQL_USER must be defined"
     exit 1

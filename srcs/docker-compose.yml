@@ -3,7 +3,8 @@ services:
     container_name: nginx
     build: ./requirements/nginx
     depends_on:
-      - wordpress
+      wordpress:
+        condition: service_healthy
     restart: always
     volumes:
       - wordpress_data:/var/www/html:delegated
@@ -42,7 +43,9 @@ services:
     container_name: wordpress
     build: ./requirements/wordpress/
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
+        restart: true
     restart: always
     volumes:
       - wordpress_data:/var/www/html:delegated
@@ -57,7 +60,6 @@ services:
       - wp_test_password
     environment:
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       WP_ADMIN_PASSWORD_FILE: /run/secrets/wp_admin_password
       WP_TEST_PASSWORD_FILE: /run/secrets/wp_test_password
     env_file: .env
