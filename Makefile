@@ -1,6 +1,11 @@
 NAME = make_inception
 SRCS = ./srcs/docker-compose.yml
 
+secrets:
+	mkdir -p secrets
+	cp ./srcs/secrets-example/* ./secrets/
+	cp ./srcs/.env.example ./srcs/.env
+
 up: data
 	docker compose -f $(SRCS) -p $(NAME) up -d --build
 
