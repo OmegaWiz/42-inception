@@ -5,8 +5,6 @@ if [ -f /run/secrets/mysql_root_password ]; then
     MYSQL_ROOT_PASSWORD=$(cat ${MYSQL_ROOT_PASSWORD_FILE})
 fi
 
-echo "MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD"
-
 if [ -f /run/secrets/mysql_password ]; then
     MYSQL_PASSWORD=$(cat ${MYSQL_PASSWORD_FILE})
 fi
@@ -79,10 +77,9 @@ chmod 640 "$LOG_DIR/"*.log 2>/dev/null || true
 
 if [ ! -d "$DATADIR/mysql" ]; then
     log "Database directory not found. Initializing database..."
-    mariadb_install_db --user=mysql --datadir="$DATADIR"
+    mariadb-install-db --user=mysql --datadir="$DATADIR"
 fi
 log "MariaDB data directory initialized successfully."
-
 
 log "Starting MariaDB for secure installation"
 mariadbd-safe --user=mysql
