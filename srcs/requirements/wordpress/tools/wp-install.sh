@@ -7,11 +7,23 @@ while ! mysqladmin ping -h"$MYSQL_HOSTNAME" --silent; do
 done
 echo "MariaDB is ready."
 
+if [ -f /run/secrets/mysql_password ]; then
+    MYSQL_PASSWORD=$(cat $MYSQL_PASSWORD_FILE)
+fi
+
+# Ensure required environment variables are set
+if [ -z "$MYSQL_HOSTNAME" ] || [ -z "$MYSQL_PASSWORD" ] || [ -z "$MYSQL_DATABASE" ] || [ -z "$MYSQL_USER" ]; then
+    echo "Error: Required environment variables are not set"
+    echo "MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD, MYSQL_DATABASE, and MYSQL_USER must be defined"
+    exit 1
+fi
+
+
 if [ -f ./wp-config.php ]
 	then
 		echo "wordpress have already been installed"
 	else
-    rm -rf *
+		rm -rf *
 		wget https://wordpress.org/latest.tar.gz
 		tar -xvf latest.tar.gz
 		mv wordpress/* .
@@ -23,18 +35,11 @@ if [ -f ./wp-config.php ]
     #envsubst < wp-config-temp.php > wp-config.php
 
 		cp wp-config-sample.php wp-config.php
-    echo $MYSQL_DATABASE
 		sed -i "s/database_name_here/$MYSQL_DATABASE/g" wp-config.php
-    echo $MYSQL_USER
 		sed -i "s/username_here/$MYSQL_USER/g" wp-config.php
-    echo $MYSQL_PASSWORD_FILE
-    sed -i "s/password_here/$(cat $MYSQL_PASSWORD_FILE)/g" wp-config.php
-    echo $MYSQL_HOSTNAME
+		sed -i "s/password_here/$MYSQL_PASSWORD)/g" wp-config.php
 		sed -i "s/localhost/$MYSQL_HOSTNAME/g" wp-config.php
-    echo "done?"
 fi
-
-echo "YESSSS"
 
 exec "$@"
 
